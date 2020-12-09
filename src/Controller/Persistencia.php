@@ -3,7 +3,7 @@
 namespace Alura\Cursos\Controller;
 
 use Alura\Cursos\Entity\Curso;
-use Alura\cursos\Infra\EntityManagerCreator;
+use Alura\Cursos\Infra\EntityManagerCreator;
 
 class Persistencia implements InterfaceControladorRequisicao{
 
@@ -15,13 +15,16 @@ class Persistencia implements InterfaceControladorRequisicao{
     }
 
     public function processaRequisicao(): void{
-    
-    $curso = new Curso();
-    $curso->setDescricao($_POST['descricao']);
-
-    $this->entityManager->persist($curso);
-    $this->entityManager->flush();
         
+        $descricao = filter_input(INPUT_POST, 'descricao',FILTER_SANITIZE_STRING);
+    
+        $curso = new Curso();
+        $curso->setDescricao($descricao);
+
+        $this->entityManager->persist($curso);
+        $this->entityManager->flush();
+        
+        header('Location: /listar-cursos', false, 302);
     }
 
     
