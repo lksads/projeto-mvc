@@ -103,15 +103,15 @@ their inclusion in the SELECT clause.
 
 In this case, the result will be an array of arrays.  In the example
 above, each element of the result array would be an array of the
-scalar name and address values. 
+scalar name and address values.
 
-You can select scalars from any entity in the query. 
+You can select scalars from any entity in the query.
 
 **Mixed**
 
 .. code-block:: sql
 
-    ``SELECT u, p.quantity FROM Users u...``
+    SELECT u, p.quantity FROM Users u...
 
 Here, the result will again be an array of arrays, with each element
 being an array made up of a User object and the scalar value
@@ -250,7 +250,7 @@ Retrieve the Username and Name of a CmsUser:
     $users = $query->getResult(); // array of CmsUser username and name values
     echo $users[0]['username'];
 
-Retrieve a ForumUser and his single associated entity:
+Retrieve a ForumUser and its single associated entity:
 
 .. code-block:: php
 
@@ -259,7 +259,7 @@ Retrieve a ForumUser and his single associated entity:
     $users = $query->getResult(); // array of ForumUser objects with the avatar association loaded
     echo get_class($users[0]->getAvatar());
 
-Retrieve a CmsUser and fetch join all the phonenumbers he has:
+Retrieve a CmsUser and fetch join all the phonenumbers it has:
 
 .. code-block:: php
 
@@ -458,8 +458,6 @@ Get all users that have no phonenumber
 Get all instances of a specific type, for use with inheritance
 hierarchies:
 
-.. versionadded:: 2.1
-
 .. code-block:: php
 
     <?php
@@ -469,29 +467,25 @@ hierarchies:
 
 Get all users visible on a given website that have chosen certain gender:
 
-.. versionadded:: 2.2
-
 .. code-block:: php
 
     <?php
     $query = $em->createQuery('SELECT u FROM User u WHERE u.gender IN (SELECT IDENTITY(agl.gender) FROM Site s JOIN s.activeGenderList agl WHERE s.id = ?1)');
 
-.. versionadded:: 2.4
-
-Starting with 2.4, the IDENTITY() DQL function also works for composite primary keys:
+The IDENTITY() DQL function also works for composite primary keys
 
 .. code-block:: php
 
     <?php
     $query = $em->createQuery("SELECT IDENTITY(c.location, 'latitude') AS latitude, IDENTITY(c.location, 'longitude') AS longitude FROM Checkpoint c WHERE c.user = ?1");
 
-Joins between entities without associations were not possible until version
-2.4, where you can generate an arbitrary join with the following syntax:
+Joins between entities without associations are available,
+where you can generate an arbitrary join with the following syntax:
 
 .. code-block:: php
 
     <?php
-    $query = $em->createQuery('SELECT u FROM User u JOIN Blacklist b WITH u.email = b.email');
+    $query = $em->createQuery('SELECT u FROM User u JOIN Banlist b WITH u.email = b.email');
 
 .. note::
     The differences between WHERE, WITH and HAVING clauses may be
@@ -533,8 +527,6 @@ You use the partial syntax when joining as well:
 
 "NEW" Operator Syntax
 ^^^^^^^^^^^^^^^^^^^^^
-
-.. versionadded:: 2.4
 
 Using the ``NEW`` operator you can construct Data Transfer Objects (DTOs) directly from DQL queries.
 
@@ -657,6 +649,16 @@ The same restrictions apply for the reference of related entities.
     of the query. Additionally Deletes of specified entities are *NOT*
     cascaded to related entities even if specified in the metadata.
 
+Comments in queries
+-------------------
+
+We can use comments with the SQL syntax of comments.
+
+.. code-block:: sql
+
+    SELECT u FROM MyProject\Model\User u
+    -- my comment
+    WHERE u.age > 20 -- comment at the end of a line
 
 Functions, Operators, Aggregates
 --------------------------------
@@ -691,8 +693,8 @@ clauses:
 -  TRIM([LEADING \| TRAILING \| BOTH] ['trchar' FROM] str) - Trim
    the string by the given trim char, defaults to whitespaces.
 -  UPPER(str) - Return the upper-case of the given string.
--  DATE_ADD(date, days, unit) - Add the number of days to a given date. (Supported units are DAY, MONTH)
--  DATE_SUB(date, days, unit) - Substract the number of days from a given date. (Supported units are DAY, MONTH)
+-  DATE_ADD(date, value, unit) - Add the given time to a given date. (Supported units are SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, YEAR)
+-  DATE_SUB(date, value, unit) - Subtract the given time from a given date. (Supported units are SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, YEAR)
 -  DATE_DIFF(date1, date2) - Calculate the difference in days between date1-date2.
 
 Arithmetic operators
@@ -900,7 +902,7 @@ Class Table Inheritance
 is an inheritance mapping strategy where each class in a hierarchy
 is mapped to several tables: its own table and the tables of all
 parent classes. The table of a child class is linked to the table
-of a parent class through a foreign key constraint. Doctrine 2
+of a parent class through a foreign key constraint. Doctrine ORM
 implements this strategy through the use of a discriminator column
 in the topmost table of the hierarchy because this is the easiest
 way to achieve polymorphic queries with Class Table Inheritance.
@@ -996,8 +998,9 @@ the Query class. Here they are:
    result contains more than one object, an ``NonUniqueResultException``
    is thrown. If the result contains no objects, an ``NoResultException``
    is thrown. The pure/mixed distinction does not apply.
--  ``Query#getOneOrNullResult()``: Retrieve a single object. If no
-   object is found null will be returned.
+-  ``Query#getOneOrNullResult()``: Retrieve a single object. If the
+   result contains more than one object, a ``NonUniqueResultException``
+   is thrown. If no object is found null will be returned.
 -  ``Query#getArrayResult()``: Retrieves an array graph (a nested
    array) that is largely interchangeable with the object graph
    generated by ``Query#getResult()`` for read-only purposes.
@@ -1172,7 +1175,7 @@ why we are listing as many of the assumptions here for reference:
 - If an object is already in memory from a previous query of any kind, then
   then the previous object is used, even if the database may contain more
   recent data. Data from the database is discarded. This even happens if the
-  previous object is still an unloaded proxy. 
+  previous object is still an unloaded proxy.
 
 This list might be incomplete.
 
@@ -1452,10 +1455,10 @@ Given that there are 10 users and corresponding addresses in the database the ex
     SELECT * FROM address WHERE id IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
 .. note::
-    Changing the fetch mode during a query mostly makes sense for one-to-one and many-to-one relations. In that case, 
+    Changing the fetch mode during a query mostly makes sense for one-to-one and many-to-one relations. In that case,
     all the necessary IDs are available after the root entity (``user`` in the above example) has been loaded. So, one
     query per association can be executed to fetch all the referred-to entities (``address``).
-    
+
     For one-to-many relations, changing the fetch mode to eager will cause to execute one query **for every root entity
     loaded**. This gives no improvement over the ``lazy`` fetch mode which will also initialize the associations on
     a one-by-one basis once they are accessed.

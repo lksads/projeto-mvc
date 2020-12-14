@@ -1,9 +1,7 @@
 Filters
 =======
 
-.. versionadded:: 2.2
-
-Doctrine 2.2 features a filter system that allows the developer to add SQL to
+Doctrine ORM features a filter system that allows the developer to add SQL to
 the conditional clauses of queries, regardless the place where the SQL is
 generated (e.g. from a DQL query, or by loading associated entities).
 
@@ -39,7 +37,7 @@ proper quoting of parameters.
 
     <?php
     namespace Example;
-    use Doctrine\ORM\Mapping\ClassMetaData,
+    use Doctrine\ORM\Mapping\ClassMetadata,
         Doctrine\ORM\Query\Filter\SQLFilter;
 
     class MyLocaleFilter extends SQLFilter

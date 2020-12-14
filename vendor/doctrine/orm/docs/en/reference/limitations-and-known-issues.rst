@@ -6,7 +6,7 @@ Therefore we think it is very important to be honest about the
 current limitations to our users. Much like every other piece of
 software Doctrine2 is not perfect and far from feature complete.
 This section should give you an overview of current limitations of
-Doctrine 2 as well as critical known issues that you should know
+Doctrine ORM as well as critical known issues that you should know
 about.
 
 Current Limitations
@@ -63,7 +63,7 @@ Where the ``attribute_name`` column contains the key and
 ``$attributes``.
 
 The feature request for persistence of primitive value arrays
-`is described in the DDC-298 ticket <https://github.com/doctrine/doctrine2/issues/3743>`_.
+`is described in the DDC-298 ticket <https://github.com/doctrine/orm/issues/3743>`_.
 
 Cascade Merge with Bi-directional Associations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,8 +71,8 @@ Cascade Merge with Bi-directional Associations
 There are two bugs now that concern the use of cascade merge in combination with bi-directional associations.
 Make sure to study the behavior of cascade merge if you are using it:
 
--  `DDC-875 <https://github.com/doctrine/doctrine2/issues/5398>`_ Merge can sometimes add the same entity twice into a collection
--  `DDC-763 <https://github.com/doctrine/doctrine2/issues/5277>`_ Cascade merge on associated entities can insert too many rows through "Persistence by Reachability"
+-  `DDC-875 <https://github.com/doctrine/orm/issues/5398>`_ Merge can sometimes add the same entity twice into a collection
+-  `DDC-763 <https://github.com/doctrine/orm/issues/5277>`_ Cascade merge on associated entities can insert too many rows through "Persistence by Reachability"
 
 Custom Persisters
 ~~~~~~~~~~~~~~~~~
@@ -83,8 +83,8 @@ Currently there is no way to overwrite the persister implementation
 for a given entity, however there are several use-cases that can
 benefit from custom persister implementations:
 
--  `Add Upsert Support <https://github.com/doctrine/doctrine2/issues/5178>`_
--  `Evaluate possible ways in which stored-procedures can be used <https://github.com/doctrine/doctrine2/issues/4946>`_
+-  `Add Upsert Support <https://github.com/doctrine/orm/issues/5178>`_
+-  `Evaluate possible ways in which stored-procedures can be used <https://github.com/doctrine/orm/issues/4946>`_
 
 Persist Keys of Collections
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,7 +94,7 @@ PHP Arrays are ordered hash-maps and so should be the
 evaluate a feature that optionally persists and hydrates the keys
 of a Collection instance.
 
-`Ticket DDC-213 <https://github.com/doctrine/doctrine2/issues/2817>`_
+`Ticket DDC-213 <https://github.com/doctrine/orm/issues/2817>`_
 
 Mapping many tables to one entity
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,7 +107,7 @@ to the same entity.
 Behaviors
 ~~~~~~~~~
 
-Doctrine 2 will **never** include a behavior system like Doctrine 1
+Doctrine ORM will **never** include a behavior system like Doctrine 1
 in the core library. We don't think behaviors add more value than
 they cost pain and debugging hell. Please see the many different
 blog posts we have written on this topics:
@@ -115,10 +115,9 @@ blog posts we have written on this topics:
 -  `Doctrine2 "Behaviors" in a Nutshell <http://www.doctrine-project.org/2010/02/17/doctrine2-behaviours-nutshell.html>`_
 -  `A re-usable Versionable behavior for Doctrine2 <http://www.doctrine-project.org/2010/02/24/doctrine2-versionable.html>`_
 -  `Write your own ORM on top of Doctrine2 <http://www.doctrine-project.org/2010/07/19/your-own-orm-doctrine2.html>`_
--  `Doctrine 2 Behavioral Extensions <http://www.doctrine-project.org/2010/11/18/doctrine2-behavioral-extensions.html>`_
--  `Doctrator <https://github.com/pablodip/doctrator`>_
+-  `Doctrine ORM Behavioral Extensions <http://www.doctrine-project.org/2010/11/18/doctrine2-behavioral-extensions.html>`_
 
-Doctrine 2 has enough hooks and extension points so that **you** can
+Doctrine ORM has enough hooks and extension points so that **you** can
 add whatever you want on top of it. None of this will ever become
 core functionality of Doctrine2 however, you will have to rely on
 third party extensions for magical behaviors.
@@ -127,9 +126,9 @@ Nested Set
 ~~~~~~~~~~
 
 NestedSet was offered as a behavior in Doctrine 1 and will not be
-included in the core of Doctrine 2. However there are already two
+included in the core of Doctrine ORM. However there are already two
 extensions out there that offer support for Nested Set with
-Doctrine 2:
+ORM:
 
 
 -  `Doctrine2 Hierarchical-Structural Behavior <http://github.com/guilhermeblanco/Doctrine2-Hierarchical-Structural-Behavior>`_
@@ -144,16 +143,15 @@ backwards compatibility issues or where no simple fix exists (yet).
 We don't plan to add every bug in the tracker there, just those
 issues that can potentially cause nightmares or pain of any sort.
 
-See bugs, improvement and feature requests on `Github issues
-<https://github.com/doctrine/doctrine2/issues>`_.
+See bugs, improvement and feature requests on `Github issues <https://github.com/doctrine/orm/issues>`_.
 
 Identifier Quoting and Legacy Databases
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For compatibility reasons between all the supported vendors and
-edge case problems Doctrine 2 does **NOT** do automatic identifier
+edge case problems Doctrine ORM does **NOT** do automatic identifier
 quoting. This can lead to problems when trying to get
-legacy-databases to work with Doctrine 2.
+legacy-databases to work with Doctrine ORM.
 
 
 -  You can quote column-names as described in the

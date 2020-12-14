@@ -80,7 +80,7 @@ You can solve this exception by:
 How can I filter an association?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Natively you can't filter associations in 2.0 and 2.1. You should use DQL queries to query for the filtered set of entities.
+You should use DQL queries to query for the filtered set of entities.
 
 I call clear() on a One-To-Many collection but the entities are not deleted
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,7 +98,7 @@ How can I add columns to a many-to-many table?
 
 The many-to-many association is only supporting foreign keys in the table definition
 To work with many-to-many tables containing extra columns you have to use the
-foreign keys as primary keys feature of Doctrine introduced in version 2.1.
+foreign keys as primary keys feature of Doctrine ORM.
 
 See :doc:`the tutorial on composite primary keys for more information<../tutorials/composite-primary-keys>`.
 
@@ -128,10 +128,10 @@ See the previous question for a solution to this task.
 Inheritance
 -----------
 
-Can I use Inheritance with Doctrine 2?
+Can I use Inheritance with Doctrine ORM?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
-Yes, you can use Single- or Joined-Table Inheritance in Doctrine 2.
+
+Yes, you can use Single- or Joined-Table Inheritance in ORM.
 
 See the documentation chapter on :doc:`inheritance mapping <inheritance-mapping>` for
 the details.
@@ -197,6 +197,21 @@ Can I sort by a function (for example ORDER BY RAND()) in DQL?
 No, it is not supported to sort by function in DQL. If you need this functionality you should either
 use a native-query or come up with another solution. As a side note: Sorting with ORDER BY RAND() is painfully slow
 starting with 1000 rows.
+
+Is it better to write DQL or to generate it with the query builder?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The purpose of the ``QueryBuilder`` is to generate DQL dynamically,
+which is useful when you have optional filters, conditional joins, etc.
+
+But the ``QueryBuilder`` is not an alternative to DQL, it actually generates DQL
+queries at runtime, which are then interpreted by Doctrine. This means that
+using the ``QueryBuilder`` to build and run a query is actually always slower
+than only running the corresponding DQL query.
+
+So if you only need to generate a query and bind parameters to it,
+you should use plain DQL, as this is a simpler and much more readable solution.
+You should only use the ``QueryBuilder`` when you can't achieve what you want to do with a DQL query.
 
 A Query fails, how can I debug it?
 ----------------------------------

@@ -10,7 +10,7 @@ change it during the life of your project. This decision for a
 specific vendor potentially allows you to make use of powerful SQL
 features that are unique to the vendor.
 
-It is worth to mention that Doctrine 2 also allows you to handwrite
+It is worth to mention that Doctrine ORM also allows you to handwrite
 your SQL instead of extending the DQL parser. Extending DQL is sort of an
 advanced extension point. You can map arbitrary SQL to your objects
 and gain access to vendor specific functionalities using the
@@ -21,7 +21,7 @@ the :doc:`Native Query <../reference/native-sql>` chapter.
 The DQL Parser has hooks to register functions that can then be
 used in your DQL queries and transformed into SQL, allowing to
 extend Doctrines Query capabilities to the vendors strength. This
-post explains the Used-Defined Functions API (UDF) of the Dql
+post explains the User-Defined Functions API (UDF) of the Dql
 Parser and shows some examples to give you some hints how you would
 extend DQL.
 
@@ -70,7 +70,7 @@ methods, which are quite handy in my opinion:
 Date Diff
 ---------
 
-`Mysql's DateDiff function <http://dev.mysql.com/doc/refman/5.1/en/date-and-time-functions.html#function_datediff>`_
+`Mysql's DateDiff function <https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html#function_datediff>`_
 takes two dates as argument and calculates the difference in days
 with ``date1-date2``.
 
@@ -164,7 +164,7 @@ Date Add
 
 Often useful it the ability to do some simple date calculations in
 your DQL query using
-`MySql's DATE\_ADD function <http://dev.mysql.com/doc/refman/5.1/en/date-and-time-functions.html#function_date-add>`_.
+`MySql's DATE_ADD function <https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html#function_date-add>`_.
 
 I'll skip the blah and show the code for this function:
 
@@ -240,12 +240,12 @@ functionalities in DQL, we would be excited to see user extensions
 that add vendor specific function packages, for example more math
 functions, XML + GIS Support, Hashing functions and so on.
 
-For 2.0 we will come with the current set of functions, however for
+For ORM we will come with the current set of functions, however for
 a future version we will re-evaluate if we can abstract even more
 vendor sql functions and extend the DQL languages scope.
 
 Code for this Extension to DQL and other Doctrine Extensions can be
 found
-`in my Github DoctrineExtensions repository <http://github.com/beberlei/DoctrineExtensions>`_.
+`in the GitHub DoctrineExtensions repository <http://github.com/beberlei/DoctrineExtensions>`_.
 
 

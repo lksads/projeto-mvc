@@ -27,7 +27,7 @@ Work that have not yet been persisted are lost.
 
 .. note::
 
-    Doctrine does NEVER touch the public API of methods in your entity 
+    Doctrine does NEVER touch the public API of methods in your entity
     classes (like getters and setters) nor the constructor method.
     Instead, it uses reflection to get/set data from/to your entity objects.
     When Doctrine fetches data from DB and saves it back,
@@ -48,12 +48,12 @@ headline "Hello World" with the ID 1234:
     <?php
     $article = $entityManager->find('CMS\Article', 1234);
     $article->setHeadline('Hello World dude!');
-    
+
     $article2 = $entityManager->find('CMS\Article', 1234);
     echo $article2->getHeadline();
 
 In this case the Article is accessed from the entity manager twice,
-but modified in between. Doctrine 2 realizes this and will only
+but modified in between. Doctrine ORM realizes this and will only
 ever give you access to one instance of the Article with ID 1234,
 no matter how often do you retrieve it from the EntityManager and
 even no matter what kind of Query method you are using (find,
@@ -100,25 +100,25 @@ from newly opened EntityManager.
     {
         /** @Id @Column(type="integer") @GeneratedValue */
         private $id;
-    
+
         /** @Column(type="string") */
         private $headline;
-    
+
         /** @ManyToOne(targetEntity="User") */
         private $author;
-    
+
         /** @OneToMany(targetEntity="Comment", mappedBy="article") */
         private $comments;
-    
+
         public function __construct()
         {
             $this->comments = new ArrayCollection();
         }
-    
+
         public function getAuthor() { return $this->author; }
         public function getComments() { return $this->comments; }
     }
-    
+
     $article = $em->find('Article', 1);
 
 This code only retrieves the ``Article`` instance with id 1 executing
@@ -139,22 +139,22 @@ your code. See the following code:
 
     <?php
     $article = $em->find('Article', 1);
-    
+
     // accessing a method of the user instance triggers the lazy-load
     echo "Author: " . $article->getAuthor()->getName() . "\n";
-    
+
     // Lazy Loading Proxies pass instanceof tests:
     if ($article->getAuthor() instanceof User) {
         // a User Proxy is a generated "UserProxy" class
     }
-    
+
     // accessing the comments as an iterator triggers the lazy-load
     // retrieving ALL the comments of this article from the database
     // using a single SELECT statement
     foreach ($article->getComments() as $comment) {
         echo $comment->getText() . "\n\n";
     }
-    
+
     // Article::$comments passes instanceof tests for the Collection interface
     // But it will NOT pass for the ArrayCollection interface
     if ($article->getComments() instanceof \Doctrine\Common\Collections\Collection) {
@@ -174,7 +174,7 @@ methods along the lines of the ``getName()`` method shown below:
         {
             // lazy loading code
         }
-    
+
         public function getName()
         {
             $this->_load();
@@ -245,10 +245,16 @@ as follows:
    persist operation. However, the persist operation is cascaded to
    entities referenced by X, if the relationships from X to these
    other entities are mapped with cascade=PERSIST or cascade=ALL (see
-   ":ref:`Transitive Persistence <transitive-persistence>`").
+   ":ref:`transitive-persistence`").
 -  If X is a removed entity, it becomes managed.
 -  If X is a detached entity, an exception will be thrown on
    flush.
+
+.. caution::
+
+    Do not pass detached entities to the persist operation. The persist operation always
+    considers entities that are not yet known to the ``EntityManager`` as new entities
+    (refer to the ``STATE_NEW`` constant inside the ``UnitOfWork``).
 
 Removing entities
 -----------------
@@ -269,7 +275,7 @@ which means that its persistent state will be deleted once
     for and appear in query and collection results. See
     the section on :ref:`Database and UnitOfWork Out-Of-Sync <workingobjects_database_uow_outofsync>`
     for more information.
-    
+
 
 Example:
 
@@ -286,12 +292,12 @@ as follows:
 -  If X is a new entity, it is ignored by the remove operation.
    However, the remove operation is cascaded to entities referenced by
    X, if the relationship from X to these other entities is mapped
-   with cascade=REMOVE or cascade=ALL (see ":ref:`Transitive Persistence <transitive-persistence>`").
+   with cascade=REMOVE or cascade=ALL (see ":ref:`transitive-persistence`").
 -  If X is a managed entity, the remove operation causes it to
    become removed. The remove operation is cascaded to entities
    referenced by X, if the relationships from X to these other
    entities is mapped with cascade=REMOVE or cascade=ALL (see
-   ":ref:`Transitive Persistence <transitive-persistence>`").
+   ":ref:`transitive-persistence`").
 -  If X is a detached entity, an InvalidArgumentException will be
    thrown.
 -  If X is a removed entity, it is ignored by the remove operation.
@@ -312,10 +318,10 @@ Deleting an object with all its associated objects can be achieved
 in multiple ways with very different performance impacts.
 
 
-1. If an association is marked as ``CASCADE=REMOVE`` Doctrine 2
+1. If an association is marked as ``CASCADE=REMOVE`` Doctrine ORM
    will fetch this association. If its a Single association it will
    pass this entity to
-   ´EntityManager#remove()``. If the association is a collection, Doctrine will loop over all    its elements and pass them to``EntityManager#remove()\`.
+   ``EntityManager#remove()``. If the association is a collection, Doctrine will loop over all    its elements and pass them to``EntityManager#remove()``.
    In both cases the cascade remove semantics are applied recursively.
    For large object graphs this removal strategy can be very costly.
 2. Using a DQL ``DELETE`` statement allows you to delete multiple
@@ -329,6 +335,13 @@ in multiple ways with very different performance impacts.
    completely by-passes any foreign key ``onDelete=CASCADE`` option,
    because Doctrine will fetch and remove all associated entities
    explicitly nevertheless.
+
+.. note::
+
+    Calling ``remove`` on an entity will remove the object from the identiy
+    map and therefore detach it. Querying the same entity again, for example 
+    via a lazy loaded relation, will return a new object. 
+
 
 Detaching entities
 ------------------
@@ -357,14 +370,14 @@ as follows:
    become detached. The detach operation is cascaded to entities
    referenced by X, if the relationships from X to these other
    entities is mapped with cascade=DETACH or cascade=ALL (see
-   ":ref:`Transitive Persistence <transitive-persistence>`"). Entities which previously referenced X
+   ":ref:`transitive-persistence`"). Entities which previously referenced X
    will continue to reference X.
 -  If X is a new or detached entity, it is ignored by the detach
    operation.
 -  If X is a removed entity, the detach operation is cascaded to
    entities referenced by X, if the relationships from X to these
    other entities is mapped with cascade=DETACH or cascade=ALL (see
-   ":ref:`Transitive Persistence <transitive-persistence>`"). Entities which previously referenced X
+   ":ref:`transitive-persistence`"). Entities which previously referenced X
    will continue to reference X.
 
 There are several situations in which an entity is detached
@@ -423,7 +436,7 @@ as follows:
 -  If X is a managed entity, it is ignored by the merge operation,
    however, the merge operation is cascaded to entities referenced by
    relationships from X if these relationships have been mapped with
-   the cascade element value MERGE or ALL (see ":ref:`Transitive Persistence <transitive-persistence>`").
+   the cascade element value MERGE or ALL (see ":ref:`transitive-persistence`").
 -  For all entities Y referenced by relationships from X having the
    cascade element value MERGE or ALL, Y is merged recursively as Y'.
    For all such Y referenced by X, X' is set to reference Y'. (Note
@@ -640,7 +653,7 @@ just created via the "new" operator).
 Querying
 --------
 
-Doctrine 2 provides the following ways, in increasing level of
+Doctrine ORM provides the following ways, in increasing level of
 power and flexibility, to query for persistent objects. You should
 always start with the simplest one that suits your needs.
 
@@ -687,13 +700,13 @@ methods on a repository as follows:
 
     <?php
     // $em instanceof EntityManager
-    
+
     // All users that are 20 years old
     $users = $em->getRepository('MyProject\Domain\User')->findBy(array('age' => 20));
-    
+
     // All users that are 20 years old and have a surname of 'Miller'
     $users = $em->getRepository('MyProject\Domain\User')->findBy(array('age' => 20, 'surname' => 'Miller'));
-    
+
     // A single user by its nickname
     $user = $em->getRepository('MyProject\Domain\User')->findOneBy(array('nickname' => 'romanb'));
 
@@ -729,7 +742,7 @@ examples are equivalent:
     <?php
     // A single user by its nickname
     $user = $em->getRepository('MyProject\Domain\User')->findOneBy(array('nickname' => 'romanb'));
-    
+
     // A single user by its nickname (__call magic)
     $user = $em->getRepository('MyProject\Domain\User')->findOneByNickname('romanb');
 
@@ -743,8 +756,6 @@ Additionally, you can just count the result of the provided conditions when you 
 
 By Criteria
 ~~~~~~~~~~~
-
-.. versionadded:: 2.3
 
 The Repository implement the ``Doctrine\Common\Collections\Selectable``
 interface. That means you can build ``Doctrine\Common\Collections\Criteria``
@@ -787,7 +798,7 @@ A DQL query is represented by an instance of the
 
     <?php
     // $em instanceof EntityManager
-    
+
     // All users with an age between 20 and 30 (inclusive).
     $q = $em->createQuery("select u from MyDomain\Model\User u where u.age >= 20 and u.age <= 30");
     $users = $q->getResult();
@@ -800,7 +811,9 @@ DQL and its syntax as well as the Doctrine class can be found in
 :doc:`the dedicated chapter <dql-doctrine-query-language>`.
 For programmatically building up queries based on conditions that
 are only known at runtime, Doctrine provides the special
-``Doctrine\ORM\QueryBuilder`` class. More information on
+``Doctrine\ORM\QueryBuilder`` class. While this a powerful tool,
+it also brings more complexity to your code compared to plain DQL,
+so you should only use it when you need it. More information on
 constructing queries with a QueryBuilder can be found
 :doc:`in Query Builder chapter <query-builder>`.
 
@@ -830,18 +843,18 @@ in a central location.
 
     <?php
     namespace MyDomain\Model;
-    
+
     use Doctrine\ORM\EntityRepository;
     use Doctrine\ORM\Mapping as ORM;
-    
+
     /**
      * @ORM\Entity(repositoryClass="MyDomain\Model\UserRepository")
      */
     class User
     {
-    
+
     }
-    
+
     class UserRepository extends EntityRepository
     {
         public function getAllAdminUsers()
@@ -857,7 +870,7 @@ You can access your repository now by calling:
 
     <?php
     // $em instanceof EntityManager
-    
+
     $admins = $em->getRepository('MyDomain\Model\User')->getAllAdminUsers();
 
 
